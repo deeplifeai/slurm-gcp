@@ -132,6 +132,7 @@ module "slurm_controller_instance" {
   prolog_scripts               = var.prolog_scripts
   slurmdbd_conf_tpl            = var.slurmdbd_conf_tpl
   slurm_conf_tpl               = var.slurm_conf_tpl
+  subnetwork_project           = var.project_id
 }
 
 ######################
@@ -228,6 +229,7 @@ module "slurm_login_instance" {
   slurm_cluster_name    = var.slurm_cluster_name
   static_ips            = each.value.static_ips
   subnetwork            = each.value.subnetwork
+  subnetwork_project    = var.project_id
   zone                  = each.value.zone
 
   slurm_depends_on = flatten([
