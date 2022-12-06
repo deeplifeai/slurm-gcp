@@ -122,7 +122,8 @@ data "local_file" "cgroup_conf_tpl" {
 data "google_compute_instance_template" "controller_template" {
   count = var.enable_reconfigure || var.cloudsql != null ? 1 : 0
 
-  name = var.instance_template
+  project = var.project_id
+  name    = var.instance_template
 }
 
 ##########
@@ -283,6 +284,7 @@ resource "google_compute_project_metadata_item" "epilog_scripts" {
 resource "google_pubsub_schema" "this" {
   count = var.enable_reconfigure ? 1 : 0
 
+  project    = var.project_id
   name       = "${var.slurm_cluster_name}-slurm-events"
   type       = "PROTOCOL_BUFFER"
   definition = <<EOD
@@ -305,7 +307,8 @@ EOD
 resource "google_pubsub_topic" "this" {
   count = var.enable_reconfigure ? 1 : 0
 
-  name = "${var.slurm_cluster_name}-slurm-events-${random_string.topic_suffix.result}"
+  project = var.project_id
+  name    = "${var.slurm_cluster_name}-slurm-events-${random_string.topic_suffix.result}"
 
   schema_settings {
     schema   = google_pubsub_schema.this[0].id
@@ -416,8 +419,9 @@ module "reconfigure_notify" {
 
   count = var.enable_reconfigure ? 1 : 0
 
-  topic = google_pubsub_topic.this[0].name
-  type  = "reconfig"
+  topic      = google_pubsub_topic.this[0].name
+  type       = "reconfig"
+  project_id = var.project_id
 
   triggers = {
     compute_list  = join(",", local.compute_list)
@@ -444,8 +448,9 @@ module "devel_notify" {
 
   count = var.enable_devel && var.enable_reconfigure ? 1 : 0
 
-  topic = google_pubsub_topic.this[0].name
-  type  = "devel"
+  topic      = google_pubsub_topic.this[0].name
+  type       = "devel"
+  project_id = var.project_id
 
   triggers = {
     devel = sha256(module.slurm_metadata_devel[0].metadata.value)

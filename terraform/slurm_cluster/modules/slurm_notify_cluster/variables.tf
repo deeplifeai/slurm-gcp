@@ -35,3 +35,9 @@ variable "triggers" {
   type        = map(string)
   default     = {}
 }
+
+variable "project_id" {
+  description = "GCP project ID."
+  type        = string
+  default     = ""
+}

@@ -30,7 +30,11 @@ def main():
         choices=["reconfig", "restart", "devel"],
         help="Notify message type",
     )
-
+    parser.add_argument(
+        "--project",
+        help="GCP project ID",
+        default=None
+    )
     args = parser.parse_args()
 
     message_json = json.dumps(
@@ -39,7 +43,8 @@ def main():
             "timestamp": datetime.utcnow().isoformat(),
         }
     )
-    publish_message(lkp.project, args.topic_id, message_json)
+    project = args.project or lkp.project
+    publish_message(project, args.topic_id, message_json)
 
 
 if __name__ == "__main__":
