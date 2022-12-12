@@ -127,5 +127,5 @@ touch $FLAGFILE
 
 echo "running python cluster setup script"
 chmod +x $SETUP_SCRIPT_FILE
-python3 $SCRIPTS_DIR/util.py
+python $SCRIPTS_DIR/util.py
 exec $SETUP_SCRIPT_FILE
